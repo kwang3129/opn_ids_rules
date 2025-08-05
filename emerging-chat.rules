@@ -1,0 +1,58 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC USER Likely bot with 0 0 colon checkin"; flow:to_server,established; content:"USER|20|"; nocase; content:" 0 0 |3a|"; within:40; content:"|0a|"; within:40; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2025066; rev:1; metadata:created_at 2013_07_13, confidence Medium, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC JOIN command"; flow:to_server,established; content:"JOIN|2023|"; nocase; content:"|0a|"; within:40; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2002025; rev:19; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC PRIVMSG command"; flow:established,to_server; content:"PRIVMSG|20|"; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2002026; rev:21; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC USER command"; flow:to_server,established; content:"USER|20|"; nocase; content:"|203a|"; within:40; content:"|0a|"; within:40; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2002023; rev:16; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET CHAT Gadu-Gadu Chat Client Checkin via HTTP"; flow:established,to_server; http.uri; content:"/appsvc/appmsg"; nocase; content:"fmnumber="; nocase; content:"&version="; nocase; content:"&fmt="; nocase; content:"&lastmsg="; nocase; classtype:trojan-activity; sid:2007866; rev:10; metadata:created_at 2010_07_30, signature_severity Major, updated_at 2020_08_20;)
+alert tcp $EXTERNAL_NET 8074 -> $HOME_NET any (msg:"ET CHAT GaduGadu Chat Server Welcome Packet"; flow:established,from_server; dsize:12; content:"|01 00 00 00|"; depth:4; flowbits:set,ET.gadu.welcome; reference:url,piotr.trzcionkowski.pl/default.asp?load=/programy/pppgg_protokol.html; classtype:policy-violation; sid:2008297; rev:5; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET any (msg:"ET CHAT IRC authorization message"; flow: established; content:"NOTICE AUTH"; content:"Looking up your hostname..."; nocase; classtype:misc-activity; sid:2000355; rev:5; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET 8074 (msg:"ET CHAT GaduGadu Chat Client Login Packet"; flowbits:isset,ET.gadu.welcome; flow:established,to_server; dsize:<50; content:"|15 00 00 00|"; depth:4; flowbits:set,ET.gadu.loginsent; reference:url,piotr.trzcionkowski.pl/default.asp?load=/programy/pppgg_protokol.html; classtype:policy-violation; sid:2008298; rev:3; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp any any -> any !6666:7000 (msg:"ET CHAT IRC USER Off-port Likely bot with 0 0 colon checkin"; flow:to_server,established; content:"USER|20|"; nocase; content:" 0 0 |3a|"; within:40; content:"|0a|"; within:40; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2025067; rev:1; metadata:created_at 2013_07_13, confidence Medium, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp $EXTERNAL_NET 8074 -> $HOME_NET any (msg:"ET CHAT GaduGadu Chat Server Login Failed Packet"; flowbits:isset,ET.gadu.loginsent; flow:established,from_server; dsize:8; content:"|09 00 00 00 00 00 00 00|"; reference:url,piotr.trzcionkowski.pl/default.asp?load=/programy/pppgg_protokol.html; classtype:policy-violation; sid:2008300; rev:3; metadata:created_at 2010_07_30, confidence Medium, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC NICK command"; flow:to_server,established; content:"NICK|20|"; nocase; content:"|0a|"; within:40; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2002024; rev:19; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET CHAT Gadu-Gadu IM Login Server Request"; flow:established,to_server; http.uri; content:"/appsvc/appmsg"; nocase; content:".asp"; nocase; content:"fmnumber="; content:"&version="; content:"&fmt="; http.host; content:"appmsg.gadu-gadu."; reference:url,piotr.trzcionkowski.pl/default.asp?load=/programy/pppgg_protokol.html; classtype:policy-violation; sid:2008295; rev:8; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2020_08_20;)
+alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC PONG response"; flow:from_client,established; content:"PONG|20|"; depth:5; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2002028; rev:20; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2020_08_19;)
+alert tcp any 6666:7000 -> any any (msg:"ET CHAT IRC PING command"; flow:from_server,established; content:"PING|20|"; flowbits:set,is_proto_irc; classtype:misc-activity; sid:2002027; rev:16; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2019_07_26;)

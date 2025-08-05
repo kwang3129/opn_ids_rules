@@ -1,0 +1,51 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET WORM W32/Rimecud wg.txt Checkin"; flow:established,to_server; http.uri; content:"/wg.txt"; reference:md5,a89f7289d5cce821a194542e90026082; reference:md5,fd56ce176889d4fbe588760a1da6462b; reference:url,www.microsoft.com/security/portal/Threat/Encyclopedia/Entry.aspx?Name=Worm%3AWin32%2FRimecud; classtype:trojan-activity; sid:2014402; rev:3; metadata:created_at 2012_03_20, signature_severity Major, updated_at 2020_04_21;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ETPRO WORM Worm.Win32.Kelihos.A Checkin 1"; flow:to_server,established; content:"GET /"; nocase; depth:5; content:"|0D 0A 0D 0A 01 02 01 01 01 01 02 01|"; offset:32; depth:256; content:"|00 00 00 00 01|"; distance:4; within:5; reference:url,www.about-threats.trendmicro.com/Malware.aspx?language=us&name=WORM_KELIHOS.SM; classtype:trojan-activity; sid:2801228; rev:3; metadata:created_at 2011_01_08, confidence Medium, signature_severity Major, updated_at 2019_09_27;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"ET WORM W32/Njw0rm CnC Beacon"; flow:established,to_server; content:"lv0njxq80"; depth:9; content:"njxq80"; distance:0; reference:url,www.fireeye.com/blog/technical/malware-research/2013/08/njw0rm-brother-from-the-same-mother.html; reference:md5,4c60493b14c666c56db163203e819272; reference:md5,b0e1d20accd9a2ed29cdacb803e4a89d; classtype:command-and-control; sid:2017404; rev:3; metadata:attack_target Client_Endpoint, created_at 2013_08_31, deployment Perimeter, signature_severity Major, tag c2, updated_at 2019_07_26, mitre_tactic_id TA0010, mitre_tactic_name Exfiltration, mitre_technique_id T1041, mitre_technique_name Exfiltration_Over_C2_Channel;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET WORM Possible Worm Sohanad.Z or Other Infection Request for setting.nql"; flow:established,to_server; http.uri; content:"/setting.nql"; nocase; reference:md5,a70aad8f27957702febfa162556dc5b5; classtype:trojan-activity; sid:2012201; rev:5; metadata:created_at 2011_01_17, confidence Medium, signature_severity Major, updated_at 2020_08_04;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET WORM Win32.Socks.s HTTP Post Checkin"; flow:established,to_server; http.method; content:"POST"; http.uri; content:".php"; http.request_body; content:"proc=[System Process]|0a|"; depth:22; classtype:trojan-activity; sid:2008020; rev:6; metadata:created_at 2010_07_30, signature_severity Major, updated_at 2020_08_18;)
+alert http any any -> $HOME_NET 8080 (msg:"ET WORM TheMoon.linksys.router 1"; flow:established; urilen:7; http.method; content:"GET"; http.uri; content:"/HNAP1/"; http.host; pcre:"/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/"; reference:url,isc.sans.edu/forums/diary/Linksys+Worm+Captured/17630; classtype:trojan-activity; sid:2018131; rev:6; metadata:created_at 2014_02_13, signature_severity Major, updated_at 2020_08_18;)
+alert http any any -> $HOME_NET 8080 (msg:"ET WORM TheMoon.linksys.router 2"; flow:to_server,established; http.method; content:"POST"; http.uri; content:"/tmUnblock.cgi"; reference:url,isc.sans.edu/forums/diary/Linksys+Worm+Captured/17630; reference:url,devttys0.com/2014/02/wrt120n-fprintf-stack-overflow/; classtype:trojan-activity; sid:2018132; rev:5; metadata:created_at 2014_02_13, signature_severity Major, updated_at 2020_07_07;)

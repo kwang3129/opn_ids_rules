@@ -1,0 +1,57 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS GitHub/CicleCI Themed Phishing Domain in DNS Lookup (circle-cl .com)"; dns.query; dotprefix; content:".circle-cl.com"; nocase; endswith; reference:url,github.blog/2022-09-21-security-alert-new-phishing-campaign-targets-github-users/; classtype:credential-theft; sid:2038934; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_09_22, deployment Perimeter, confidence High, signature_severity Major, updated_at 2022_09_22;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS NATO Themed Maldoc Related Domain in DNS Lookup (am .my-zo .org)"; dns.query; content:"am.my-zo.org"; nocase; bsize:12; reference:url,twitter.com/souiten/status/1548963032574767104; reference:md5,4b160dea19282597342c160f44d4bdf8; reference:md5,a23a106fc8049feb296aa281ef5319a6; reference:md5,9e5500cf454bc49609bb0200f7de23c3; classtype:trojan-activity; sid:2037782; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_07_18, deployment Perimeter, malware_family Maldoc, confidence High, signature_severity Major, updated_at 2022_07_18;)
+alert dns $HOME_NET any -> any any (msg:"ETPRO CURRENT_EVENTS Commonly Abused File Hosting  Domain in DNS Lookup"; dns.query; bsize:14; content:"mail.seily.com"; nocase; reference:md5,d42904fa1100905ec53743da257c64d3; classtype:bad-unknown; sid:2855897; rev:1; metadata:attack_target Client_Endpoint, created_at 2023_12_06, deployment Perimeter, performance_impact Low, confidence Medium, signature_severity Minor, updated_at 2023_12_06, reviewed_at 2024_05_06;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS GitHub/CicleCI Themed Phishing Domain in DNS Lookup (email-circleci .com)"; dns.query; dotprefix; content:".email-circleci.com"; nocase; endswith; reference:url,github.blog/2022-09-21-security-alert-new-phishing-campaign-targets-github-users/; classtype:credential-theft; sid:2038935; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_09_22, deployment Perimeter, confidence High, signature_severity Major, updated_at 2022_09_22;)
+alert dns any any -> any any (msg:"ET CURRENT_EVENTS [Fireeye] Backdoor.DNS.BEACON.[CSBundle DNS]"; content:"|00 01 00 01|"; offset:4; depth:4; content:"|03|"; within:15; content:"|0a|_domainkey"; distance:3; within:11; content:"|00 00 10 00 01 c0 0c 00 10 00 01 00 00 00 02 01 00 ff|v=DKIM1\; p="; fast_pattern; reference:url,github.com/fireeye/red_team_tool_countermeasures; classtype:trojan-activity; sid:2031265; rev:3; metadata:affected_product Windows_XP_Vista_7_8_10_Server_32_64_Bit, attack_target Client_Endpoint, created_at 2020_12_08, deployment Perimeter, confidence High, signature_severity Major, tag c2, updated_at 2020_12_09, mitre_tactic_id TA0010, mitre_tactic_name Exfiltration, mitre_technique_id T1041, mitre_technique_name Exfiltration_Over_C2_Channel;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS Various Malware Related Domain in DNS Lookup (adobeacrobatreaderupdate .net)"; dns.query; bsize:28; content:"adobeacrobatreaderupdate.net"; nocase; classtype:misc-activity; sid:2052249; rev:1; metadata:attack_target Client_Endpoint, created_at 2024_04_23, deployment Perimeter, performance_impact Low, confidence High, signature_severity Major, updated_at 2024_04_23;)
+alert dns $HOME_NET any -> any any (msg:"ETPRO CURRENT_EVENTS Various Malware Related Domain in DNS Lookup"; dns.query; bsize:16; content:"skypefreinds.net"; nocase; reference:md5,6d496dccbf5e59b742b3195d851cb0c7; reference:md5,87e97131fb4e2ed2c19193c0a0825212; reference:md5,80c7c91952806a54a6703e3ff3c54d62; reference:md5,eab858834170f8e1be652a30532cb209; classtype:trojan-activity; sid:2856817; rev:1; metadata:attack_target Client_Endpoint, created_at 2024_04_29, deployment Perimeter, performance_impact Low, confidence High, signature_severity Major, updated_at 2024_04_29;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS Abused Domain Delivering Malicious Payloads in DNS Lookup (one-click .cc)"; dns.query; bsize:12; content:"one-click.cc"; nocase; classtype:misc-activity; sid:2047724; rev:1; metadata:attack_target Client_Endpoint, created_at 2023_08_24, deployment Perimeter, performance_impact Low, confidence Medium, signature_severity Major, updated_at 2023_08_24, reviewed_at 2024_01_29; target:src_ip;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS Sliver Related Domain in DNS Lookup"; dns.query; content:"saleforces.s3-accelerate.amazonaws.com"; nocase; bsize:38; reference:url,mobile.twitter.com/ESETresearch/status/1547943014860894210; classtype:trojan-activity; sid:2037773; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_07_15, deployment Perimeter, confidence High, signature_severity Major, updated_at 2022_07_15;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS GitHub/CicleCI Themed Phishing Domain in DNS Lookup (emails-circleci .com)"; dns.query; dotprefix; content:".emails-circleci.com"; nocase; endswith; reference:url,github.blog/2022-09-21-security-alert-new-phishing-campaign-targets-github-users/; classtype:credential-theft; sid:2038933; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_09_22, deployment Perimeter, confidence High, signature_severity Major, updated_at 2022_09_22;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS Sliver Related Domain in DNS Lookup (saleforces-it .com)"; dns.query; content:"saleforces-it.com"; nocase; bsize:17; reference:url,twitter.com/ESETresearch/status/1547943014860894210; classtype:trojan-activity; sid:2037772; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_07_15, deployment Perimeter, confidence High, signature_severity Major, updated_at 2022_07_15;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS GitHub/CicleCI Themed Phishing Domain in DNS Lookup (circle-ci .com)"; dns.query; dotprefix; content:".circle-ci.com"; nocase; endswith; reference:url,github.blog/2022-09-21-security-alert-new-phishing-campaign-targets-github-users/; classtype:credential-theft; sid:2038932; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_09_22, deployment Perimeter, confidence High, signature_severity Major, updated_at 2022_09_22;)
+alert dns $HOME_NET any -> any any (msg:"ET CURRENT_EVENTS Abused Domain Delivering Malicious Payloads in DNS Lookup (freeclickr .com)"; dns.query; bsize:14; content:"freeclickr.com"; nocase; classtype:misc-activity; sid:2047725; rev:1; metadata:attack_target Client_Endpoint, created_at 2023_08_24, deployment Perimeter, performance_impact Low, confidence Medium, signature_severity Major, updated_at 2023_08_24, reviewed_at 2024_01_29; target:src_ip;)

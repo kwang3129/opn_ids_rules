@@ -1,0 +1,48 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert tls $HOME_NET any -> any any (msg:"ET SCADA [nsacyber/ELITEWOLF] Tridium Niagara Default X509 Certificate"; flow:established,to_client; tls.certs; content:"Niagara"; fast_pattern; reference:url,github.com/nsacyber/ELITEWOLF; classtype:misc-activity; sid:2048747; rev:2; metadata:affected_product Tridum_Niagara_Series, attack_target ICS, created_at 2023_10_23, deployment Perimeter, deployment Internal, performance_impact Low, confidence High, signature_severity Minor, updated_at 2024_04_25, reviewed_at 2024_10_02; target:src_ip;)
+alert tcp any 2404 -> any any (msg:"ET SCADA IEC-104 STARTDT (Start Data Transfer) Confirmation"; flow:established,to_client; dsize:6; content:"|68 04 0b 00 00 00|"; reference:url,icsdefense.net/pcap; reference:url,github.com/automayt/ICS-pcap/tree/master/IEC 60870/iec104; classtype:protocol-command-decode; sid:2046161; rev:1; metadata:affected_product IoT, attack_target IoT, created_at 2023_06_06, deployment Perimeter, deployment Internal, deployment Datacenter, performance_impact Low, confidence High, signature_severity Informational, updated_at 2023_06_07; target:src_ip;)
+alert tcp any 2404 -> any any (msg:"ET SCADA IEC-104 TESTFR (Test Frame) Confirmation"; flow:established,to_client; dsize:6; content:"|68 04 83 00 00 00|"; reference:url,icsdefense.net/pcap; reference:url,github.com/automayt/ICS-pcap/tree/master/IEC 60870/iec104; classtype:protocol-command-decode; sid:2046159; rev:1; metadata:affected_product IoT, attack_target IoT, created_at 2023_06_06, deployment Perimeter, deployment Internal, deployment Datacenter, performance_impact Low, confidence High, signature_severity Informational, updated_at 2023_06_07; target:src_ip;)
+alert tcp any any -> $HOME_NET 2404 (msg:"ET SCADA IEC-104 Station Interrogation - Global ASDU Broadcast"; flow:established,to_server; content:"|68|"; startswith; content:"|64|"; distance:0; content:"|ff ff 00 00 00 14|"; fast_pattern; distance:3; reference:url,icsdefense.net/pcap; reference:url,github.com/automayt/ICS-pcap/tree/master/IEC 60870/iec104; classtype:protocol-command-decode; sid:2046164; rev:1; metadata:affected_product IoT, attack_target IoT, created_at 2023_06_06, deployment Perimeter, deployment Internal, deployment Datacenter, confidence High, signature_severity Informational, updated_at 2023_06_07; target:dest_ip;)

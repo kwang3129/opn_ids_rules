@@ -1,0 +1,54 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert dns $HOME_NET any -> any any (msg:"ET GAMES Moonlight Hack Domain in DNS Lookup"; dns.query; content:"moonlight.uno"; nocase; bsize:13; reference:md5,ebfdbc2a60373344e6ab32c866027ea8; classtype:policy-violation; sid:2034842; rev:1; metadata:attack_target Client_Endpoint, created_at 2021_12_23, deployment Perimeter, confidence High, signature_severity Minor, updated_at 2021_12_23;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET GAMES FreeRide Games"; flow:established,to_server; http.uri; content:"/do/SDM"; nocase; content:"action="; nocase; http.user_agent; content:"AHTTPConnection"; nocase; depth:15; reference:url,freeridegames.comurl,web.archive.org/web/20140318090458/http://forums.comodo.com:80/av-false-positivenegative-detection-reporting/trojwarewin32trojanagentgen-t55152.0.html; classtype:misc-activity; sid:2013710; rev:8; metadata:attack_target Client_Endpoint, created_at 2011_09_28, deployment Perimeter, performance_impact Low, confidence High, signature_severity Informational, updated_at 2023_07_06, reviewed_at 2024_03_11;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ETPRO GAMES User-Agent (Thor Patcher)"; flow:established,to_server; http.user_agent; content:"Thor Patcher"; reference:md5,acaa6e8aa4c934ef6d486fee071b4be3; classtype:trojan-activity; sid:2805515; rev:4; metadata:created_at 2012_10_04, confidence High, signature_severity Major, updated_at 2020_04_22;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET GAMES Blizzard Web Downloader Install Detected"; flow: established,to_server; http.user_agent; content: "Blizzard Web Client"; nocase; depth:19; classtype:policy-violation; sid:2012170; rev:4; metadata:created_at 2011_01_10, confidence High, signature_severity Informational, updated_at 2020_08_18;)
+alert dns $HOME_NET any -> any any (msg:"ET GAMES UnknownApps Game Cheat Service Checkin (auth .unknownp .one)"; dns.query; content:"auth.unknownp.one"; nocase; bsize:17; reference:md5,26c643629102e506561890596fb2dd5c; reference:md5,dc4b2c44289288d64fa757311515304f; classtype:misc-activity; sid:2034902; rev:1; metadata:attack_target Client_Endpoint, created_at 2022_01_12, deployment Perimeter, performance_impact Low, confidence Medium, signature_severity Informational, updated_at 2022_01_12;)
+alert dns $HOME_NET any -> any any (msg:"ET GAMES UnknownApps Game Cheat Service Checkin (auth .hwidspoof .me)"; dns.query; content:"auth.hwidspoof.me"; nocase; bsize:17; reference:md5,26c643629102e506561890596fb2dd5c; reference:md5,dc4b2c44289288d64fa757311515304f; classtype:misc-activity; sid:2034901; rev:1; metadata:created_at 2022_01_12, confidence Medium, signature_severity Informational, updated_at 2022_01_12;)
+alert tcp $EXTERNAL_NET 25565 -> $HOME_NET any (msg:"ET GAMES MINECRAFT Server response inbound"; flow:established,from_server; content:"|7B 22|"; depth:10; classtype:policy-violation; sid:2021701; rev:1; metadata:created_at 2015_08_21, confidence High, signature_severity Informational, updated_at 2019_07_26;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET 6112 (msg:"ET GAMES Guild Wars connection"; flow:established,to_server; content:"|01 00 00 00 00 F1 00 10 00 01 00 00 00 00 00 00 00 00 00 00 00|"; classtype:policy-violation; sid:2002154; rev:5; metadata:created_at 2010_07_30, confidence High, signature_severity Informational, updated_at 2019_07_26;)
+alert dns $HOME_NET any -> any any (msg:"ET GAMES Moonlight Hack Domain in DNS Lookup"; dns.query; content:"moonsoft.eu3.biz"; nocase; bsize:16; reference:md5,ebfdbc2a60373344e6ab32c866027ea8; classtype:policy-violation; sid:2034841; rev:1; metadata:attack_target Client_Endpoint, created_at 2021_12_23, deployment Perimeter, confidence High, signature_severity Minor, updated_at 2021_12_23;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET 27020:27050 (msg:"ET GAMES STEAM Connection (v2)"; flow:established,to_server; content:"|00 00 00 03|"; dsize:4; classtype:policy-violation; sid:2003089; rev:4; metadata:created_at 2010_07_30, confidence High, signature_severity Informational, updated_at 2019_07_26;)

@@ -1,0 +1,60 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert udp $EXTERNAL_NET any -> $HOME_NET 111 (msg:"ETPRO DOS Possible RPC Portmapper Scanning"; content:"|00 00 00 00 00 00 00|"; offset:4; depth:7; content:"|00 01 86 a0|"; fast_pattern; distance:1; within:4; content:"|00 00 00 04|"; distance:4; within:4; threshold: type both,track by_src,count 2,seconds 60; reference:url,threatpost.com/reflection-ddos-attacks-abusing-rpc-portmapper/114318; classtype:attempted-dos; sid:2812543; rev:1; metadata:created_at 2015_08_20, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp any 123 -> any 0:1023 (msg:"ET DOS Likely NTP DDoS In Progress MON_LIST Response to Non-Ephemeral Port IMPL 0x03"; content:"|00 03 2a|"; offset:1; depth:3; byte_test:1,&,128,0; byte_test:1,&,64,0; byte_test:1,&,4,0; byte_test:1,&,2,0; byte_test:1,&,1,0; threshold: type both,track by_src,count 1,seconds 120; reference:url,www.symantec.com/connect/blogs/hackers-spend-christmas-break-launching-large-scale-ntp-reflection-attacks; reference:url,en.wikipedia.org/wiki/Ephemeral_port; classtype:attempted-dos; sid:2017966; rev:3; metadata:created_at 2014_01_14, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"ET DOS User-Agent used in known DDoS Attacks Detected inbound 2"; flow:established,to_server; http.user_agent; content:"Opera/9.02 (Windows NT 5.1|3b 20|U|3b 20|ru)"; reference:url,www.linuxquestions.org/questions/linux-security-4/massive-ddos-need-advice-help-795298/; classtype:denial-of-service; sid:2011824; rev:5; metadata:created_at 2010_10_18, confidence High, signature_severity Major, updated_at 2020_05_06;)
+alert udp $EXTERNAL_NET 53 -> $HOME_NET 1:1023 (msg:"ET DOS DNS Amplification Attack Possible Inbound Windows Non-Recursive Root Hint Reserved Port"; content:"|81 00 00 01 00 00|"; depth:6; offset:2; byte_test:2,>,10,0,relative; byte_test:2,>,10,2,relative; content:"|0c|root-servers|03|net|00|"; distance:0; content:"|0c|root-servers|03|net|00|"; distance:0; threshold: type both, track by_dst, seconds 60, count 5; reference:url,twitter.com/sempersecurus/status/763749835421941760; reference:url,pastebin.com/LzubgtVb; classtype:bad-unknown; sid:2023053; rev:2; metadata:attack_target Server, created_at 2016_08_12, deployment Datacenter, performance_impact Low, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert tcp $EXTERNAL_NET any -> $HOME_NET $HTTP_PORTS (msg:"ET DOS Terse HTTP GET Likely LOIC"; flow:to_server,established; dsize:18; content:"GET / HTTP/1.1|0d 0a 0d 0a|"; depth:18; threshold:type both,track by_dst,count 500,seconds 60; classtype:attempted-dos; sid:2019346; rev:2; metadata:created_at 2014_10_03, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $HOME_NET 53 -> $EXTERNAL_NET 1:1023 (msg:"ET DOS DNS Amplification Attack Possible Outbound Windows Non-Recursive Root Hint Reserved Port"; content:"|81 00 00 01 00 00|"; depth:6; offset:2; byte_test:2,>,10,0,relative; byte_test:2,>,10,2,relative; content:"|0c|root-servers|03|net|00|"; distance:0; content:"|0c|root-servers|03|net|00|"; distance:0; threshold: type both, track by_dst, seconds 60, count 5; reference:url,twitter.com/sempersecurus/status/763749835421941760; reference:url,pastebin.com/LzubgtVb; classtype:bad-unknown; sid:2023054; rev:2; metadata:attack_target Server, created_at 2016_08_12, deployment Datacenter, performance_impact Low, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $EXTERNAL_NET any -> $HOME_NET 53 (msg:"ETPRO DOS MS DNS CHAOS Denial of Service (CVE-2017-0171)"; content:"|07 76 65 72 73 69 6f 6e 04 62 69 6e 64 00 00 10 00 03|"; offset:12; threshold:type both, count 1000, seconds 10, track by_dst; reference:cve,2017-0171; classtype:attempted-dos; sid:2826329; rev:2; metadata:affected_product Windows_DNS_server, attack_target DNS_Server, created_at 2017_05_09, cve CVE_2017_0171, deployment Perimeter, performance_impact Low, confidence High, signature_severity Major, updated_at 2019_07_26;)
+alert udp any any -> $HOME_NET 1900 (msg:"ET DOS Possible SSDP Amplification Scan in Progress"; content:"M-SEARCH * HTTP/1.1"; content:"ST|3a 20|ssdp|3a|all|0d 0a|"; nocase; distance:0; fast_pattern; threshold: type both,track by_src,count 2,seconds 60; reference:url,community.rapid7.com/community/metasploit/blog/2014/08/29/weekly-metasploit-update; classtype:attempted-dos; sid:2019102; rev:1; metadata:created_at 2014_09_03, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $EXTERNAL_NET any -> $HOME_NET 389 (msg:"ET DOS Potential CLDAP Amplification Reflection"; content:"objectclass0"; fast_pattern; threshold:type both, count 200, seconds 60, track by_src; reference:url,www.akamai.com/us/en/multimedia/documents/state-of-the-internet/cldap-threat-advisory.pdf; reference:url,packetstormsecurity.com/files/139561/LDAP-Amplication-Denial-Of-Service.html; classtype:attempted-dos; sid:2024585; rev:1; metadata:affected_product Windows_XP_Vista_7_8_10_Server_32_64_Bit, affected_product Linux, attack_target Client_and_Server, created_at 2017_08_16, deployment Perimeter, performance_impact Significant, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp any any -> $HOME_NET 53 (msg:"ET DOS DNS Amplification Attack Inbound"; content:"|01 00 00 01 00 00 00 00 00 01|"; depth:10; offset:2; pcre:"/^[^\x00]+?\x00/R"; content:"|00 ff 00 01 00 00 29|"; within:7; fast_pattern; byte_test:2,>,4095,0,relative; threshold: type both, track by_dst, seconds 60, count 5; classtype:bad-unknown; sid:2016016; rev:8; metadata:created_at 2012_12_12, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"ETPRO DOS TCP Based DOS LOIC Low Orbit Ion Cannon Attack OUTBOUND Default String"; dsize:32; content:"A cat is fine too. Desudesudesu~"; threshold: type both, track by_src, count 5, seconds 30; reference:md5,b596e7cacbad1e814b0cd053086c4900; classtype:denial-of-service; sid:2806665; rev:9; metadata:created_at 2013_07_13, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $HOME_NET 1434 -> $EXTERNAL_NET any (msg:"ET DOS MC-SQLR Response Outbound Possible DDoS Participation"; content:"|05|"; depth:1; content:"ServerName|3b|"; nocase; content:"InstanceName|3b|"; distance:0; content:"IsClustered|3b|"; distance:0; content:"Version|3b|"; distance:0; threshold:type both,track by_src,count 30,seconds 60; reference:url,kurtaubuchon.blogspot.com.es/2015/01/mc-sqlr-amplification-ms-sql-server.html; classtype:attempted-dos; sid:2020305; rev:4; metadata:created_at 2015_01_23, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $EXTERNAL_NET any -> $HOME_NET 5093 (msg:"ET DOS Possible Sentinal LM Amplification attack (Request) Inbound"; dsize:6; content:"|7a 00 00 00 00 00|"; threshold: type both,track by_dst,count 10,seconds 60; classtype:attempted-dos; sid:2021172; rev:1; metadata:created_at 2015_05_29, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp any any -> any 123 (msg:"ET DOS Possible NTP DDoS Inbound Frequent Un-Authed MON_LIST Requests IMPL 0x02"; content:"|00 02 2A|"; offset:1; depth:3; byte_test:1,!&,128,0; byte_test:1,&,4,0; byte_test:1,&,2,0; byte_test:1,&,1,0; threshold: type both,track by_dst,count 2,seconds 60; reference:url,www.symantec.com/connect/blogs/hackers-spend-christmas-break-launching-large-scale-ntp-reflection-attacks; classtype:attempted-dos; sid:2017918; rev:2; metadata:created_at 2014_01_03, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $HOME_NET any -> $EXTERNAL_NET any (msg:"ETPRO DOS UDP Based D0S LOIC Low Orbit Ion Cannon Attack OUTBOUND Default String"; dsize:32; content:"A cat is fine too. Desudesudesu~"; threshold: type both, track by_src, count 5, seconds 30; reference:md5,b596e7cacbad1e814b0cd053086c4900; classtype:denial-of-service; sid:2806663; rev:9; metadata:created_at 2013_07_13, confidence Medium, signature_severity Major, updated_at 2019_07_26;)
+alert udp $HOME_NET 123 -> $EXTERNAL_NET any (msg:"ET DOS Possible NTP DDoS Multiple MON_LIST Seq 0 Response Spanning Multiple Packets IMPL 0x03"; content:"|00 03 2a|"; offset:1; depth:3; byte_test:1,&,128,0; byte_test:1,&,64,0; byte_test:1,&,4,0; byte_test:1,&,2,0; byte_test:1,&,1,0; threshold: type both,track by_src,count 2,seconds 60; reference:url,www.symantec.com/connect/blogs/hackers-spend-christmas-break-launching-large-scale-ntp-reflection-attacks; classtype:attempted-dos; sid:2017921; rev:2; metadata:created_at 2014_01_03, confidence Medium, signature_severity Major, updated_at 2019_07_26;)

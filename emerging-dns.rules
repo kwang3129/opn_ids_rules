@@ -1,0 +1,63 @@
+#@opnsense_download_hash:b08260e38737cc46f9e2286ea469739d
+# Emerging Threats Pro
+#   http://www.emergingthreatspro.com
+#
+# This distribution may contain rules under three different licenses.
+#
+#  Rules with sids 1 through 3464, and 100000000 through 100000908 are under the GPLv2.
+#  A copy of that license is available at http://www.gnu.org/licenses/gpl-2.0.html
+#
+#  Rules with sids 2000000 through 2799999 are from Emerging Threats and are covered under the BSD License
+#  as follows:
+#
+#*************************************************************
+#  Copyright (c) 2003-2025, Emerging Threats
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+#  following conditions are met:
+#
+#  * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+#    disclaimer.
+#  * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
+#    following disclaimer in the documentation and/or other materials provided with the distribution.
+#  * Neither the name of the nor the names of its contributors may be used to endorse or promote products derived
+#    from this software without specific prior written permission.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS AS IS AND ANY EXPRESS OR IMPLIED WARRANTIES,
+#  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+#  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+#  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+#  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#*************************************************************
+#
+#
+#  Rules with sids 2800000 through 2900000 are provided by Emerging Threats Pro and are covered by the license
+#  provided in this distribution titled ETPRO-License.txt
+#
+#
+
+# This Ruleset is EmergingThreats Pro optimized for suricata-5.0.
+
+alert dns any any -> $HOME_NET any (msg:"ET DNS Reply Sinkhole - 106.187.96.49 blacklistthisdomain.com"; content:"|00 01 00 01|"; content:"|00 04 6a bb 60 31|"; distance:4; within:6; classtype:trojan-activity; sid:2016591; rev:7; metadata:created_at 2013_03_19, confidence High, signature_severity Major, updated_at 2022_07_13, reviewed_at 2024_03_25;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS APT_NGO_wuaclt C2 Domain hotmal1.com"; dns.query; content:"hotmal1.com"; endswith; fast_pattern; threshold: type limit, track by_src, count 1, seconds 300; reference:url,labs.alienvault.com; classtype:targeted-activity; sid:2016571; rev:3; metadata:created_at 2013_03_14, signature_severity Major, updated_at 2024_03_26;)
+alert dns any any -> $HOME_NET any (msg:"ET DNS Reply Sinkhole - Georgia Tech (1)"; content:"|00 01 00 01|"; content:"|00 04 c6 3d e3 06|"; distance:4; within:6; reference:url,virustracker.info; classtype:trojan-activity; sid:2016422; rev:6; metadata:created_at 2013_02_16, confidence High, signature_severity Major, updated_at 2022_07_13;)
+alert dns any any -> $HOME_NET any (msg:"ET DNS Reply Sinkhole - sinkhole.cert.pl 148.81.111.111"; content:"|00 01 00 01|"; content:"|00 04 94 51 6f 6f|"; distance:4; within:6; classtype:trojan-activity; sid:2016413; rev:5; metadata:created_at 2013_02_15, confidence High, signature_severity Major, updated_at 2022_07_13;)
+alert dns any any -> $HOME_NET any (msg:"ET DNS Reply Sinkhole - Georgia Tech (2)"; content:"|00 01 00 01|"; content:"|00 04 32 3e 0c 67|"; distance:4; within:6; reference:url,virustracker.info; classtype:trojan-activity; sid:2016423; rev:7; metadata:created_at 2013_02_16, confidence High, signature_severity Major, updated_at 2022_07_13;)
+alert dns any any -> $HOME_NET any (msg:"ET DNS Reply Sinkhole - Dr. Web"; content:"|00 01 00 01|"; content:"|00 04 5b e9 f4 6a|"; distance:4; within:6; reference:url,virustracker.info; classtype:trojan-activity; sid:2016418; rev:6; metadata:created_at 2013_02_16, confidence High, signature_severity Major, updated_at 2022_07_13;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS Query for .su TLD (Soviet Union) Often Malware Related"; dns.query; content:".su"; nocase; endswith; reference:url,www.abuse.ch/?p=3581; classtype:bad-unknown; sid:2014169; rev:4; metadata:created_at 2012_01_31, confidence Medium, signature_severity Major, updated_at 2020_09_14;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS Query for .cc TLD"; dns.query; content:".cc"; endswith; fast_pattern; classtype:bad-unknown; sid:2027758; rev:5; metadata:affected_product Any, attack_target Client_Endpoint, created_at 2019_07_26, deployment Perimeter, confidence High, signature_severity Informational, updated_at 2020_09_17;)
+alert dns $HOME_NET any -> any 53 (msg:"ET DNS Hiloti DNS CnC Channel Successful Install Message"; dns.query; content:"empty"; nocase; content:"explorer_exe"; nocase; distance:0; fast_pattern; reference:url,sign.kaffenews.com/?p=104; reference:url,blog.fortinet.com/hiloti-the-botmaster-of-disguise/; classtype:command-and-control; sid:2011911; rev:4; metadata:created_at 2010_11_09, signature_severity Major, updated_at 2024_03_26;)
+alert dns $HOME_NET any -> any any (msg:"ETPRO DNS SkullSecurity Encrypted Shell Possible Tunnel 1"; dsize:>70; content:"|01 00 00 01 00 00 00 00 00 00 3c|"; offset:2; depth:11; pcre:"/^[a-f0-9]{60}/R"; content:!"|09|mailshell|03|net|00|"; content:!"webcfs0"; content:!"mailslot|03|net"; threshold: type both, count 3, seconds 60, track by_dst; reference:url,blog.skullsecurity.org/2015/dnscat2-beta-release; classtype:protocol-command-decode; sid:2814577; rev:9; metadata:created_at 2015_10_26, confidence Medium, signature_severity Minor, updated_at 2024_01_31, reviewed_at 2024_04_16;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS Query to a .tk domain - Likely Hostile"; dns.query; content:".tk"; fast_pattern; nocase; endswith; content:!"www.google.tk"; classtype:bad-unknown; sid:2012811; rev:7; metadata:created_at 2011_05_15, confidence High, signature_severity Informational, updated_at 2020_09_17;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS DNS Query for vpnoverdns - indicates DNS tunnelling"; dns.query; content:"tun.vpnoverdns.com"; depth:18; fast_pattern; nocase; endswith; reference:url,osint.bambenekconsulting.com/manual/vpnoverdns.txt; classtype:bad-unknown; sid:2018438; rev:6; metadata:created_at 2014_05_02, confidence Medium, signature_severity Minor, updated_at 2020_09_17;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS DNS Query for Illegal Drug Sales Site (SilkRoad)"; dns.query; content:"ianxz6zefk72ulzz.onion"; depth:22; classtype:policy-violation; sid:2013016; rev:5; metadata:created_at 2011_06_13, confidence Medium, signature_severity Unknown, updated_at 2020_09_01;)
+alert dns any any -> $HOME_NET any (msg:"ET DNS Reply Sinkhole - Zinkhole.org"; content:"|00 01 00 01|"; content:"|00 04 b0 1f 3e 4c|"; distance:4; within:6; classtype:trojan-activity; sid:2016419; rev:6; metadata:created_at 2013_02_16, confidence High, signature_severity Major, updated_at 2022_07_13;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS Query to a *.top domain - Likely Hostile"; threshold:type limit, track by_src, count 1, seconds 30; dns.query; content:".top"; nocase; endswith; reference:url,www.symantec.com/connect/blogs/shady-tld-research-gdn-and-our-2016-wrap; reference:url,www.spamhaus.org/statistics/tlds/; classtype:bad-unknown; sid:2023883; rev:4; metadata:affected_product Windows_XP_Vista_7_8_10_Server_32_64_Bit, attack_target Client_Endpoint, created_at 2017_02_07, deployment Perimeter, confidence Medium, signature_severity Major, updated_at 2020_09_15;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS Query to a *.pw domain - Likely Hostile"; dns.query; content:".pw"; nocase; endswith; content:!".u.pw"; endswith; nocase; classtype:bad-unknown; sid:2016778; rev:8; metadata:created_at 2013_04_20, confidence Medium, signature_severity Informational, updated_at 2020_11_19, reviewed_at 2024_04_22;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS APT_NGO_wuaclt C2 Domain micorsofts.net"; dns.query; content:"micorsofts.net"; endswith; fast_pattern; threshold: type limit, track by_src, count 1, seconds 300; reference:url,labs.alienvault.com; classtype:targeted-activity; sid:2016569; rev:5; metadata:created_at 2013_03_14, signature_severity Major, updated_at 2024_03_26;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS Query for .to TLD"; dns.query; content:".to"; endswith; fast_pattern; classtype:bad-unknown; sid:2027757; rev:5; metadata:affected_product Any, attack_target Client_Endpoint, created_at 2019_07_26, deployment Perimeter, confidence High, signature_severity Informational, updated_at 2020_09_17;)
+alert dns $HOME_NET any -> any any (msg:"ET DNS APT_NGO_wuaclt C2 Domain micorsofts.com"; dns.query; content:"micorsofts.com"; endswith; fast_pattern; threshold: type limit, track by_src, count 1, seconds 300; reference:url,labs.alienvault.com; classtype:targeted-activity; sid:2016570; rev:4; metadata:created_at 2013_03_14, signature_severity Major, updated_at 2024_03_26;)
