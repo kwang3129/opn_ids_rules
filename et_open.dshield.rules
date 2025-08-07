@@ -1,4 +1,4 @@
-#@opnsense_download_hash:26ac9a51a39aebdd7ecb260653366189
+#@opnsense_download_hash:21c5cd033a05c73d87b7e3f3fc122821
 #
 # $Id: emerging-dshield.rules $
 # Emerging Threats Dshield rules.
@@ -33,4 +33,4 @@
 #  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #
-alert ip [205.210.31.0/24,104.234.115.0/24,64.62.156.0/24,147.185.132.0/24,199.45.154.0/24,167.94.138.0/24,198.235.24.0/24,193.163.125.0/24,206.168.34.0/24,167.94.146.0/24,146.88.241.0/24,176.65.148.0/24,91.196.152.0/24,93.152.230.0/24,68.69.186.0/24,213.209.143.0/24,64.62.197.0/24,185.91.127.0/24,65.49.1.0/24,204.76.203.0/24] any -> $HOME_NET any (msg:"ET DROP Dshield Block Listed Source group 1"; reference:url,feeds.dshield.org/block.txt; threshold: type limit, track by_src, seconds 3600, count 1; classtype:misc-attack; flowbits:set,ET.Evil; flowbits:set,ET.DshieldIP; sid:2402000; rev:7452; metadata:affected_product Any, attack_target Any, deployment Perimeter, tag Dshield, signature_severity Major, created_at 2010_12_30, updated_at 2025_08_04;)
+drop ip [65.49.1.0/24,176.65.148.0/24,64.62.156.0/24,167.94.145.0/24,198.235.24.0/24,167.94.138.0/24,195.184.76.0/24,64.62.197.0/24,193.163.125.0/24,205.210.31.0/24,206.168.34.0/24,185.242.226.0/24,45.142.154.0/24,147.185.132.0/24,213.209.143.0/24,68.69.186.0/24,83.222.191.0/24,185.132.53.0/24,196.251.87.0/24,93.152.230.0/24] any -> $HOME_NET any (msg:"ET DROP Dshield Block Listed Source group 1"; reference:url,feeds.dshield.org/block.txt; threshold: type limit, track by_src, seconds 3600, count 1; classtype:misc-attack; flowbits:set,ET.Evil; flowbits:set,ET.DshieldIP; sid:2402000; rev:7454; metadata:affected_product Any, attack_target Any, deployment Perimeter, tag Dshield, signature_severity Major, created_at 2010_12_30, updated_at 2025_08_06;)

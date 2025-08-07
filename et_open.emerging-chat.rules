@@ -1,4 +1,4 @@
-#@opnsense_download_hash:26ac9a51a39aebdd7ecb260653366189
+#@opnsense_download_hash:21c5cd033a05c73d87b7e3f3fc122821
 # Emerging Threats
 #
 # This distribution may contain rules under two different licenses.
@@ -199,7 +199,7 @@ alert tcp any any -> any 6666:7000 (msg:"ET CHAT IRC PONG response"; flow:from_c
 
 alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET CHAT Gadu-Gadu IM Login Server Request"; flow:established,to_server; http.uri; content:"/appsvc/appmsg"; nocase; content:".asp"; nocase; content:"fmnumber="; content:"&version="; content:"&fmt="; http.host; content:"appmsg.gadu-gadu."; reference:url,piotr.trzcionkowski.pl/default.asp?load=/programy/pppgg_protokol.html; classtype:policy-violation; sid:2008295; rev:8; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2020_08_20;)
 
-alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET CHAT Gadu-Gadu Chat Client Checkin via HTTP"; flow:established,to_server; http.uri; content:"/appsvc/appmsg"; nocase; content:"fmnumber="; nocase; content:"&version="; nocase; content:"&fmt="; nocase; content:"&lastmsg="; nocase; classtype:trojan-activity; sid:2007866; rev:10; metadata:created_at 2010_07_30, signature_severity Major, updated_at 2020_08_20;)
+drop http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET CHAT Gadu-Gadu Chat Client Checkin via HTTP"; flow:established,to_server; http.uri; content:"/appsvc/appmsg"; nocase; content:"fmnumber="; nocase; content:"&version="; nocase; content:"&fmt="; nocase; content:"&lastmsg="; nocase; classtype:trojan-activity; sid:2007866; rev:10; metadata:created_at 2010_07_30, signature_severity Major, updated_at 2020_08_20;)
 
 alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"ET CHAT Skype VOIP Checking Version (Startup)"; flow: to_server,established; http.uri; content:"/ui/"; nocase; content:"/getlatestversion?ver="; nocase; reference:url,www1.cs.columbia.edu/~library/TR-repository/reports/reports-2004/cucs-039-04.pdf; classtype:policy-violation; sid:2001595; rev:12; metadata:created_at 2010_07_30, signature_severity Informational, updated_at 2020_09_02;)
 

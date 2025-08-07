@@ -1,4 +1,4 @@
-#@opnsense_download_hash:26ac9a51a39aebdd7ecb260653366189
+#@opnsense_download_hash:21c5cd033a05c73d87b7e3f3fc122821
 #
 # Emerging Threats Botnet Command and Control drop rules.
 #
@@ -43,7 +43,7 @@
 
 #Feodo Tracker
 
-alert ip $HOME_NET any -> [162.243.103.246] any (msg:"ET CNC Feodo Tracker Reported CnC Server group 1"; reference:url,doc.emergingthreats.net/bin/view/Main/BotCC; reference:url,feodotracker.abuse.ch; threshold: type limit, track by_src, seconds 3600, count 1; flowbits:set,ET.Evil; flowbits:set,ET.BotccIP; classtype:trojan-activity; sid:2404300; rev:7638; metadata:affected_product Windows_XP_Vista_7_8_10_Server_32_64_Bit, attack_target Client_Endpoint, deployment Perimeter, tag Banking_Trojan, signature_severity Major, created_at 2014_11_04, updated_at 2025_08_04;)
+drop ip $HOME_NET any -> [162.243.103.246] any (msg:"ET CNC Feodo Tracker Reported CnC Server group 1"; reference:url,doc.emergingthreats.net/bin/view/Main/BotCC; reference:url,feodotracker.abuse.ch; threshold: type limit, track by_src, seconds 3600, count 1; flowbits:set,ET.Evil; flowbits:set,ET.BotccIP; classtype:trojan-activity; sid:2404300; rev:7640; metadata:affected_product Windows_XP_Vista_7_8_10_Server_32_64_Bit, attack_target Client_Endpoint, deployment Perimeter, tag Banking_Trojan, signature_severity Major, created_at 2014_11_04, updated_at 2025_08_06;)
 
 
 #Ransomware Tracker

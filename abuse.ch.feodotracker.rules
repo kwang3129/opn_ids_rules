@@ -6,5 +6,5 @@
 # For questions please contact feodotracker [at] abuse.ch      #
 ################################################################
 #
-alert tcp $HOME_NET any -> [162.243.103.246] 8080 (msg:"Feodo Tracker: potential Emotet CnC Traffic detected"; threshold: type limit, track by_src, seconds 60, count 1; classtype:trojan-activity; reference:url, feodotracker.abuse.ch/browse/host/162.243.103.246/; sid:900509159; rev:1;)
+drop tcp $HOME_NET any -> [162.243.103.246] 8080 (msg:"Feodo Tracker: potential Emotet CnC Traffic detected"; threshold: type limit, track by_src, seconds 60, count 1; classtype:trojan-activity; reference:url, feodotracker.abuse.ch/browse/host/162.243.103.246/; sid:900509159; rev:1;)
 # END 1 entries
